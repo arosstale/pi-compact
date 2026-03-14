@@ -1,6 +1,6 @@
 {
   "name": "@artale/pi-compact",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Smart context compaction for Pi. Topic-aware summarization that preserves code context and drops chatter. Configurable strategies.",
   "keywords": ["pi-package"],
   "license": "MIT",

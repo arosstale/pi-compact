@@ -114,19 +114,20 @@ function formatStatus(): string {
 
 export default function init(pi: ExtensionAPI) {
   // Hook into compaction to inject our strategy prompt
-  pi.on('pre_compaction', (event: any) => {
-    if (event.prompt) {
-      event.prompt = STRATEGY_PROMPTS[state.strategy]
-    }
+  pi.on('session_before_compact', (event: any) => {
+    event.customInstructions = STRATEGY_PROMPTS[state.strategy]
     return event
   })
 
   // Track compaction events
-  pi.on('post_compaction', (event: any) => {
+  pi.on('session_compact', (event: any) => {
     state.compactions++
     state.lastCompactedAt = Date.now()
-    if (event.tokensBefore) state.tokensBeforeLast = event.tokensBefore
-    if (event.tokensAfter) state.tokensAfterLast = event.tokensAfter
+    const entry = event.compactionEntry
+    if (entry) {
+      // Estimate from the compaction entry
+      state.tokensAfterLast = entry.summary?.length ? Math.ceil(entry.summary.length / 4) : 0
+    }
   })
 
   // Command
